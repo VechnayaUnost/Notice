@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.List;
 
+import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
 import by.darya.zdzitavetskaya.notice.presentation.presenter.NoticePresenter;
@@ -42,5 +44,12 @@ public class NoticeFragment extends MvpAppCompatFragment implements NoticeView{
     @Override
     public void onNoticeSuccess(NoticeModel notice) {
         //display notice on the screen
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = App.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 }
