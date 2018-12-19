@@ -2,6 +2,14 @@ package by.darya.zdzitavetskaya.notice.presentation.view;
 
 import com.arellomobile.mvp.MvpView;
 
+import java.util.List;
+
+import by.darya.zdzitavetskaya.notice.model.NoticeModel;
+
 public interface NoticeView extends MvpView {
-    //methods that View will perform
+
+    void onNoticesSuccess(List<NoticeModel> notices);
+
+    void onNoticeSuccess(NoticeModel notice);
+
 }

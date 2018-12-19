@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.crashlytics.android.Crashlytics;
 
+import by.darya.zdzitavetskaya.notice.ui.fragment.NoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,5 +15,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_container_frame_layout, new NoticeFragment())
+                .commit();
     }
 }
