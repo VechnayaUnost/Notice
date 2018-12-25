@@ -8,13 +8,31 @@
     tools:context=".MainActivity"
     >
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentTop="true"
+        android:tabStripEnabled="false"
+        android:background="@color/colorPrimary"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        />
+
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="fill"
+        android:layout_below="@+id/tabs"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
         <Button
             android:id="@+id/btnClickMe"
@@ -48,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:src="@drawable/ic_add_white_24"
+            android:src="@drawable/ic_add_white"
             app:layout_anchor="@id/bottom_app_bar"
             />
 

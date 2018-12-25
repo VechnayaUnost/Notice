@@ -1,24 +1,20 @@
-package by.darya.zdzitavetskaya.notice.presentation.presenter;
+package by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
-import by.darya.zdzitavetskaya.notice.presentation.view.NoticeView;
+import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CompletedNoticeView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 @InjectViewState
-public class NoticePresenter extends MvpPresenter<NoticeView>{
+public class CompletedNoticePresenter extends MvpPresenter<CompletedNoticeView>{
 
-    private Realm realm;
+    private final Realm realm;
 
-    public NoticePresenter() {
+    public CompletedNoticePresenter() {
         realm = Realm.getDefaultInstance();
-        //NoticeModel noticeModel = new NoticeModel("title", "ergerger", true);
-        //addNoteInDatabase(noticeModel);
-        //getNoticesFromDatabase();
-        //getNoticeFromDatabase("a1d7f7ba-063e-45bb-ba71-cf6b0b21df83");
     }
 
     public void addNoteInDatabase(final NoticeModel notice) {

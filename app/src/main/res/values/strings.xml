@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Notice</string>
     <string name="click_me">Click me</string>
+    <string name="current">Current</string>
+    <string name="completed">Completed</string>
+    <string name="current_fragment">Current fragment</string>
+    <string name="completed_fragment">Completed fragment</string>
 </resources>

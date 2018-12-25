@@ -4,7 +4,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseMVPModel {
 
-    protected CompositeDisposable compositeDisposable = new CompositeDisposable();
+    protected final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public void onDestroyPresenter() {
         compositeDisposable.clear();

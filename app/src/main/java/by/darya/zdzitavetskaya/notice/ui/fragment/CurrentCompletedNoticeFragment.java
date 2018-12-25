@@ -16,24 +16,24 @@ import java.util.List;
 import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
-import by.darya.zdzitavetskaya.notice.presentation.presenter.NoticePresenter;
-import by.darya.zdzitavetskaya.notice.presentation.view.NoticeView;
+import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter.CompletedNoticePresenter;
+import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CompletedNoticeView;
 
-public class NoticeFragment extends MvpAppCompatFragment implements NoticeView{
+public class CurrentCompletedNoticeFragment extends MvpAppCompatFragment implements CompletedNoticeView {
 
     @InjectPresenter
-    NoticePresenter noticePresenter;
+    CompletedNoticePresenter mCompletedNoticePresenter;
 
-    public NoticeFragment() {
+    public CurrentCompletedNoticeFragment() {
         // Required empty public constructor
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
-                             final Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
+                             @Nullable final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notice, container, false);
+        return inflater.inflate(R.layout.fragment_current_notice, container, false);
     }
 
     @Override

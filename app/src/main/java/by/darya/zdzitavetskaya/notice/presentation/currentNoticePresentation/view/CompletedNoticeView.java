@@ -1,4 +1,4 @@
-package by.darya.zdzitavetskaya.notice.presentation.view;
+package by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view;
 
 import com.arellomobile.mvp.MvpView;
 
@@ -6,7 +6,7 @@ import java.util.List;
 
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
 
-public interface NoticeView extends MvpView {
+public interface CompletedNoticeView extends MvpView {
 
     void onNoticesSuccess(List<NoticeModel> notices);
 
