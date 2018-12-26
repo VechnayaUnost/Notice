@@ -15,16 +15,17 @@ import java.util.List;
 
 import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.R;
+import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
-import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter.CompletedNoticePresenter;
-import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CompletedNoticeView;
+import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter.CurrentNoticePresenter;
+import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CurrentNoticeView;
 
-public class CurrentCompletedNoticeFragment extends MvpAppCompatFragment implements CompletedNoticeView {
+public class CurrentNoticeFragment extends MvpAppCompatFragment implements CurrentNoticeView, UpdateListener {
 
     @InjectPresenter
-    CompletedNoticePresenter mCompletedNoticePresenter;
+    CurrentNoticePresenter mCurrentNoticePresenter;
 
-    public CurrentCompletedNoticeFragment() {
+    public CurrentNoticeFragment() {
         // Required empty public constructor
     }
 
@@ -44,6 +45,11 @@ public class CurrentCompletedNoticeFragment extends MvpAppCompatFragment impleme
     @Override
     public void onNoticeSuccess(NoticeModel notice) {
         //display notice on the screen
+    }
+
+    @Override
+    public void update(String name, String description) {
+
     }
 
     @Override

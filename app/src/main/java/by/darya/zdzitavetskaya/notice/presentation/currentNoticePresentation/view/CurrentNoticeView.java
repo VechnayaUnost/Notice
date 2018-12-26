@@ -6,7 +6,7 @@ import java.util.List;
 
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
 
-public interface CompletedNoticeView extends MvpView {
+public interface CurrentNoticeView extends MvpView {
 
     void onNoticesSuccess(List<NoticeModel> notices);
 

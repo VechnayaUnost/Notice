@@ -18,14 +18,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.constants.Constants;
 import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.presenter.TabPresenter;
 import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.view.TabView;
+import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
-import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentCompletedNoticeFragment;
+import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity implements TabView {
+public class MainActivity extends MvpAppCompatActivity implements TabView, UpdateListener {
 
     @InjectPresenter
     TabPresenter tabPresenter;
@@ -47,6 +49,12 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
         bottomAppBar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
     }
 
+    @OnClick(R.id.btn_show_dialog)
+    void showDialog() {
+        NoticeDialog noticeDialog = new NoticeDialog(MainActivity.this, MainActivity.this);
+        noticeDialog.showDialog();
+    }
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +71,7 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CurrentCompletedNoticeFragment(), getString(R.string.current));
+        adapter.addFragment(new CurrentNoticeFragment(), getString(R.string.current));
         adapter.addFragment(new CompletedNoticeFragment(), getString(R.string.completed));
         viewPager.setAdapter(adapter);
     }
@@ -142,6 +150,11 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
             ImageView ivTabIcon = customView.findViewById(R.id.iv_tab_icon);
             ivTabIcon.setColorFilter(getResources().getColor(color));
         }
+    }
+
+    @Override
+    public void update(String name, String description) {
+
     }
 
     @Override

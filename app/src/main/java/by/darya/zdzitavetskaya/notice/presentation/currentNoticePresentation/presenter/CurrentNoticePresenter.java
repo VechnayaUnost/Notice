@@ -4,21 +4,21 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 import by.darya.zdzitavetskaya.notice.model.NoticeModel;
-import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CompletedNoticeView;
+import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CurrentNoticeView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 @InjectViewState
-public class CompletedNoticePresenter extends MvpPresenter<CompletedNoticeView>{
+public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
 
     private final Realm realm;
 
-    public CompletedNoticePresenter() {
+    public CurrentNoticePresenter() {
         realm = Realm.getDefaultInstance();
     }
 
     public void addNoteInDatabase(final NoticeModel notice) {
-        realm.executeTransaction(realm -> realm.insertOrUpdate(notice));
+        realm.executeTransaction(realm -> realm.insertOrUpdate(notice));    //don't use viewState
     }
 
     public void getNoticesFromDatabase() {
