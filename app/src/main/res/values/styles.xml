@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SpinnerWithoutArrow" parent="android:Widget">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

@@ -110,8 +110,6 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
                 tabPresenter.onTabChanged(tab, android.R.color.white, 14);
             }
 
-
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 tabPresenter.onTabChanged(tab, android.R.color.black, 12);

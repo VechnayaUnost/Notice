@@ -7,4 +7,11 @@
     <string name="completed_fragment">Completed fragment</string>
     <string name="title">title</string>
     <string name="description">description</string>
+    <string name="date">choose date</string>
+    <string name="time">choose time</string>
+
+    <string-array name="items">
+        <item>note</item>
+        <item>task</item>
+    </string-array>
 </resources>

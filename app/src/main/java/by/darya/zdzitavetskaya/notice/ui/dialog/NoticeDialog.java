@@ -2,14 +2,24 @@ package by.darya.zdzitavetskaya.notice.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.R;
@@ -19,7 +29,7 @@ import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.pre
 
 public class NoticeDialog {
 
-    private Context context;
+    private final Context context;
     private UpdateListener updateListener;
     private Dialog dialog;
     private Unbinder unbinder;
@@ -34,11 +44,19 @@ public class NoticeDialog {
     @BindView(R.id.et_description)
     EditText etDescription;
 
+    @BindView(R.id.spinner)
+    Spinner spinner;
+
     @BindView(R.id.btn_OK)
     Button btnOk;
 
     @BindView(R.id.btn_cancel)
     Button btnCancel;
+
+    @BindView(R.id.ll_task_container)
+    LinearLayout llTaskContainer;
+
+    private int selectedItem = -1;
 
     public NoticeDialog(Context context, UpdateListener updateListener) {
         this.context = context;
@@ -74,13 +92,25 @@ public class NoticeDialog {
         currentNoticePresenter.addNoteInDatabase(note);
         updateListener.update(title, description);
         unbinder.unbind();
+        currentNoticePresenter = null;
         dialog.dismiss();
     }
 
     @OnClick(R.id.btn_cancel)
     void onCancelClick() {
         unbinder.unbind();
+        currentNoticePresenter = null;
         dialog.dismiss();
+    }
+
+    @OnItemSelected(R.id.spinner)
+    void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectedItem = position;
+        if (selectedItem == 1) {
+            llTaskContainer.setVisibility(View.VISIBLE);
+        } else {
+            llTaskContainer.setVisibility(View.GONE);
+        }
     }
 
     public void showDialog() {
@@ -90,8 +120,31 @@ public class NoticeDialog {
 
         unbinder = ButterKnife.bind(this, dialog);
 
+        setupSpinnerAdapter();
+
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    private void setupSpinnerAdapter() {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context,
+                R.layout.spinner_row, R.id.tv_spinner_item, context.getResources().getStringArray(R.array.items)) {
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View v = super.getDropDownView(position, null, parent);
+                if (position == selectedItem) {
+                    v.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                } else {
+                    v.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                }
+                return v;
+            }
+        };
+
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_row_dropdown);
+        spinner.setAdapter(spinnerAdapter);
+
+        spinner.setSelection(0);
     }
 }
