@@ -1,6 +1,7 @@
 package by.darya.zdzitavetskaya.notice;
 
 import android.support.design.bottomappbar.BottomAppBar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -41,18 +42,17 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
     Unbinder unbinder;
 
     @OnClick(R.id.fab)
     public void fabClick() {
-        setFabAlignmentMode();
-        bottomAppBar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-    }
-
-    @OnClick(R.id.btn_show_dialog)
-    void showDialog() {
-        NoticeDialog noticeDialog = new NoticeDialog(MainActivity.this, MainActivity.this);
-        noticeDialog.showDialog();
+        if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
+            NoticeDialog noticeDialog = new NoticeDialog(MainActivity.this, MainActivity.this);
+            noticeDialog.showDialog();
+        }
     }
 
     @Override
@@ -108,6 +108,8 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 tabPresenter.onTabChanged(tab, android.R.color.white, 14);
+                setFab();
+                bottomAppBar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
             }
 
             @Override
@@ -127,12 +129,18 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
         }
     }
 
-    public void setFabAlignmentMode() {
+    public void setFab() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+            setFabIcon(R.drawable.ic_delete_white);
         } else {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+            setFabIcon(R.drawable.ic_add_white);
         }
+    }
+
+    private void setFabIcon(int id) {
+        fab.setImageDrawable(ContextCompat.getDrawable(this, id));
     }
 
     @Override
