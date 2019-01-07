@@ -17,13 +17,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 
 import com.arellomobile.mvp.MvpAppCompatDialogFragment;
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +35,7 @@ import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.presenter.NoticeDialogPresenter;
 
-public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView {
+public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     //private final Context context;
     //private UpdateListener updateListener;
@@ -43,8 +43,10 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView 
     private Unbinder unbinder;
     private String title;
     private String description;
-    private Date date;
-    private Date time;
+    private Calendar calendar = Calendar.getInstance();
+
+    private DatePickerFragment datePickerFragment;
+    private TimePickerFragment timePickerFragment;
 
     //private CurrentNoticePresenter currentNoticePresenter;
 
@@ -77,18 +79,22 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView 
 
     private int selectedItem = -1;
 
-    DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            date = new GregorianCalendar(year, month, dayOfMonth).getTime();
-            btnDate.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(month+1)
-                    + "-" + String.valueOf(year));
-        }
-    };
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-    TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay, minute) -> {
+        btnDate.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(month+1) + "-" + String.valueOf(year));
+    }
 
-    };
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+
+        btnTime.setText(String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
+    }
 
     @Nullable
     @Override
@@ -151,15 +157,16 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView 
 
     @OnClick(R.id.btn_date)
     void onDateClick() {
-        DatePickerFragment datePickerFragment;
-        if (date != null) {
-            datePickerFragment = DatePickerFragment.newInstance(date);
-        } else {
-            datePickerFragment = DatePickerFragment.newInstance(new Date());
-        }
-        datePickerFragment.setListener(onDateSetListener);
-        //DatePickerFragment datePickerFragment = new DatePickerFragment();
+        datePickerFragment = DatePickerFragment.newInstance(calendar);
+        datePickerFragment.setListener(this);
         datePickerFragment.show(getFragmentManager(),"datePicker");
+    }
+
+    @OnClick(R.id.btn_time)
+    void onTimeClick() {
+        timePickerFragment = TimePickerFragment.newInstance(calendar);
+        timePickerFragment.setListener(this);
+        timePickerFragment.show(getFragmentManager(), "timePicker");
     }
 
     @OnItemSelected(R.id.spinner)

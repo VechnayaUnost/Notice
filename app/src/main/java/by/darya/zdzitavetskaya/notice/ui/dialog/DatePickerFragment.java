@@ -1,6 +1,5 @@
 package by.darya.zdzitavetskaya.notice.ui.dialog;
 
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class DatePickerFragment extends DialogFragment {
 
@@ -24,7 +22,7 @@ public class DatePickerFragment extends DialogFragment {
         this.onDateSetListener = onDateSetListener;
     }
 
-    public static DatePickerFragment newInstance(Date date) {
+    public static DatePickerFragment newInstance(Calendar date) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_DATE, date);
 
@@ -37,16 +35,11 @@ public class DatePickerFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Date date = (Date) getArguments().getSerializable(ARG_DATE);
+        final Calendar date = (Calendar) getArguments().getSerializable(ARG_DATE);
 
-        Calendar calendar = Calendar.getInstance();
-        if (date != null) {
-            calendar.setTime(date);
-        }
-
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int day = date.get(Calendar.DAY_OF_MONTH);
 
         return new DatePickerDialog(getActivity(), onDateSetListener, year, month, day);
     }
