@@ -6,7 +6,7 @@ import java.util.UUID;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class NoticeModel extends RealmObject {
+public class NoteModel extends RealmObject {
     @PrimaryKey
     private String id;
 
@@ -18,11 +18,11 @@ public class NoticeModel extends RealmObject {
 
     private Date date;
 
-    public NoticeModel() {
+    public NoteModel() {
 
     }
 
-    public NoticeModel(String title, String description, boolean isSolved) {
+    public NoteModel(String title, String description, boolean isSolved) {
         id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;

@@ -17,7 +17,7 @@ public class MigrationManager implements RealmMigration {
 
         switch ((int) oldVersion) {
             case CustomRealmConfiguration.VERSION_1:
-                realm.where("NoticeModel").findAll().deleteAllFromRealm();
+                realm.where("NoteModel").findAll().deleteAllFromRealm();
                 message = upgradeMessageInfo(schema, message);
         }
     }

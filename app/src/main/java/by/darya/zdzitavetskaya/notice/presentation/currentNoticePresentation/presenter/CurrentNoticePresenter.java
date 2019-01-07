@@ -3,7 +3,7 @@ package by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.pr
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import by.darya.zdzitavetskaya.notice.model.NoticeModel;
+import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CurrentNoticeView;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,17 +17,17 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
         realm = Realm.getDefaultInstance();
     }
 
-    public void addNoteInDatabase(final NoticeModel notice) {
-        realm.executeTransaction(realm -> realm.insertOrUpdate(notice));    //don't use viewState
-    }
+//    public void addNoteInDatabase(final NoteModel notice) {
+//        realm.executeTransaction(realm -> realm.insertOrUpdate(notice));    //don't use viewState
+//    }
 
     public void getNoticesFromDatabase() {
-        final RealmResults<NoticeModel> notices = realm.where(NoticeModel.class).findAll();
+        final RealmResults<NoteModel> notices = realm.where(NoteModel.class).findAll();
         getViewState().onNoticesSuccess(notices);
     }
 
     public void getNoticeFromDatabase(final String id) {
-        final NoticeModel notice = realm.where(NoticeModel.class).equalTo("id", id).findFirst();
+        final NoteModel notice = realm.where(NoteModel.class).equalTo("id", id).findFirst();
         getViewState().onNoticeSuccess(notice);
     }
 }
