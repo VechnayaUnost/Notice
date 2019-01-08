@@ -45,9 +45,6 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    //private final Context context;
-    //private UpdateListener updateListener;
-    //private Dialog dialog;
     private Unbinder unbinder;
     private String title;
     private String description;
@@ -55,8 +52,6 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
 
     private DatePickerFragment datePickerFragment;
     private TimePickerFragment timePickerFragment;
-
-    //private CurrentNoticePresenter currentNoticePresenter;
 
     @InjectPresenter
     NoticeDialogPresenter noticeDialogPresenter;
@@ -93,7 +88,7 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        btnDate.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(month+1) + "-" + String.valueOf(year));
+        btnDate.setText(String.format("%s-%s-%s", String.valueOf(dayOfMonth), String.valueOf(month + 1), String.valueOf(year)));
     }
 
     @Override
@@ -101,7 +96,7 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
 
-        btnTime.setText(String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
+        btnTime.setText(String.format("%s:%s", String.valueOf(hourOfDay), String.valueOf(minute)));
     }
 
     @Nullable
@@ -116,19 +111,13 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
         return view;
     }
 
-    //    public NoticeDialog(Context context, UpdateListener updateListener) {
-//        this.context = context;
-//        this.updateListener = updateListener;
-//        currentNoticePresenter = new CurrentNoticePresenter();
-//    }
-
     @OnTextChanged(R.id.et_title)
-    void onTitleChanged(CharSequence s, int start, int before, int count) {
+    void onTitleChanged(CharSequence s) {
         title = String.valueOf(s);
     }
 
     @OnTextChanged(R.id.et_description)
-    void onDescriptionChanged(CharSequence s, int start, int before, int count) {
+    void onDescriptionChanged(CharSequence s) {
         description = String.valueOf(s);
     }
 
@@ -145,26 +134,25 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
             return;
         }
 
+        NoteModel note;
+
         if (selectedItem == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
             setupAlarm();
+            note = new NoteModel(title, description, false, calendar.getTime());
+        } else {
+            note = new NoteModel(title, description, false, null);
         }
 
-        NoteModel note = new NoteModel(title, description, false);
-
         noticeDialogPresenter.addNoteInDatabase(note);
-        //updateListener.update(title, description);
+
         unbinder.unbind();
         dismiss();
-//        currentNoticePresenter = null;
-//        dialog.dismiss();
     }
 
     @OnClick(R.id.btn_cancel)
     void onCancelClick() {
         unbinder.unbind();
         dismiss();
-//        currentNoticePresenter = null;
-//        dialog.dismiss();
     }
 
     @OnClick(R.id.btn_date)
@@ -197,35 +185,21 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
         final Intent intent = new Intent(getContext(), MessageReceiver.class);
 
         intent.putExtra("task", "deadline an hour");
-        long millis = calendar.getTimeInMillis() - System.currentTimeMillis() - DateUtils.HOUR_IN_MILLIS;
+        int millis = (int)(calendar.getTimeInMillis() - System.currentTimeMillis() - DateUtils.HOUR_IN_MILLIS);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) (millis), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), millis, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (alarmManager != null) {
             int SDK_INT = Build.VERSION.SDK_INT;
             if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, (int) (millis), pendingIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             } else if (SDK_INT < Build.VERSION_CODES.M) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, (int) (millis), pendingIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             } else {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, (int) (millis), pendingIntent);
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             }
         }
     }
-
-//    public void showDialog() {
-//        dialog = new Dialog(context);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.dialog_custom);
-//
-//        unbinder = ButterKnife.bind(this, dialog);
-//
-//        setupSpinnerAdapter();
-//
-//        dialog.setCanceledOnTouchOutside(true);
-//        dialog.setCancelable(false);
-//        dialog.show();
-//    }
 
     private void setupSpinnerAdapter() {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),

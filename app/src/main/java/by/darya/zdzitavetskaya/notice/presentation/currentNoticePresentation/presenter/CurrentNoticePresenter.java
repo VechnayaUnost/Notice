@@ -17,10 +17,6 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
         realm = Realm.getDefaultInstance();
     }
 
-//    public void addNoteInDatabase(final NoteModel notice) {
-//        realm.executeTransaction(realm -> realm.insertOrUpdate(notice));    //don't use viewState
-//    }
-
     public void getNoticesFromDatabase() {
         final RealmResults<NoteModel> notices = realm.where(NoteModel.class).findAll();
         getViewState().onNoticesSuccess(notices);
