@@ -50,8 +50,11 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
     @OnClick(R.id.fab)
     public void fabClick() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
-            NoticeDialog noticeDialog = new NoticeDialog(MainActivity.this, MainActivity.this);
-            noticeDialog.showDialog();
+            NoticeDialog noticeDialog = new NoticeDialog();
+            noticeDialog.setCancelable(false);
+            noticeDialog.show(getSupportFragmentManager(), "dialog");
+//            NoticeDialog noticeDialog = new NoticeDialog(MainActivity.this, MainActivity.this);
+//            noticeDialog.showDialog();
         }
     }
 

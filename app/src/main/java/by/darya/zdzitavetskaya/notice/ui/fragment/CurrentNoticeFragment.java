@@ -7,7 +7,7 @@ import java.util.List;
 import butterknife.OnClick;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
-import by.darya.zdzitavetskaya.notice.model.NoticeModel;
+import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter.CurrentNoticePresenter;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CurrentNoticeView;
 
@@ -31,12 +31,12 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     }
 
     @Override
-    public void onNoticesSuccess(final List<NoticeModel> notices) {
+    public void onNoticesSuccess(final List<NoteModel> notices) {
         //display all notices on the screen
     }
 
     @Override
-    public void onNoticeSuccess(NoticeModel notice) {
+    public void onNoticeSuccess(NoteModel notice) {
         //display notice on the screen
     }
 
