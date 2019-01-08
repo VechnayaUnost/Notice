@@ -4,6 +4,7 @@
     package="by.darya.zdzitavetskaya.notice">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -20,10 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="7f8a7b78bbf5b3c8fa05d6fdd3521fff466fa8e6"
-            />
+            android:value="7f8a7b78bbf5b3c8fa05d6fdd3521fff466fa8e6" />
+
+        <receiver android:name=".model.receiver.MessageReceiver" />
     </application>
 
 </manifest>

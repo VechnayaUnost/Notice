@@ -1,12 +1,17 @@
 package by.darya.zdzitavetskaya.notice.ui.dialog;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +38,10 @@ import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
+import by.darya.zdzitavetskaya.notice.model.receiver.MessageReceiver;
 import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.presenter.NoticeDialogPresenter;
+
+import static android.content.Context.ALARM_SERVICE;
 
 public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -137,6 +145,10 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
             return;
         }
 
+        if (selectedItem == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
+            setupAlarm();
+        }
+
         NoteModel note = new NoteModel(title, description, false);
 
         noticeDialogPresenter.addNoteInDatabase(note);
@@ -176,6 +188,28 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
             llTaskContainer.setVisibility(View.VISIBLE);
         } else {
             llTaskContainer.setVisibility(View.GONE);
+            calendar = Calendar.getInstance();
+        }
+    }
+
+    private void setupAlarm() {
+        final AlarmManager alarmManager = (AlarmManager) getActivity().getApplicationContext().getSystemService(ALARM_SERVICE);
+        final Intent intent = new Intent(getContext(), MessageReceiver.class);
+
+        intent.putExtra("task", "deadline an hour");
+        long millis = calendar.getTimeInMillis() - System.currentTimeMillis() - DateUtils.HOUR_IN_MILLIS;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) (millis), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (alarmManager != null) {
+            int SDK_INT = Build.VERSION.SDK_INT;
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, (int) (millis), pendingIntent);
+            } else if (SDK_INT < Build.VERSION_CODES.M) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, (int) (millis), pendingIntent);
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, (int) (millis), pendingIntent);
+            }
         }
     }
 
