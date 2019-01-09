@@ -38,7 +38,7 @@ import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
-import by.darya.zdzitavetskaya.notice.model.receiver.MessageReceiver;
+import by.darya.zdzitavetskaya.notice.model.receiver.AlarmBroadcastReceiver;
 import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.presenter.NoticeDialogPresenter;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -49,6 +49,7 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
     private String title;
     private String description;
     private Calendar calendar = Calendar.getInstance();
+    private NoteModel note;
 
     private DatePickerFragment datePickerFragment;
     private TimePickerFragment timePickerFragment;
@@ -134,11 +135,9 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
             return;
         }
 
-        NoteModel note;
-
         if (selectedItem == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
-            setupAlarm();
             note = new NoteModel(title, description, false, calendar.getTime());
+            setupAlarm();
         } else {
             note = new NoteModel(title, description, false, null);
         }
@@ -182,17 +181,16 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
 
     private void setupAlarm() {
         final AlarmManager alarmManager = (AlarmManager) getActivity().getApplicationContext().getSystemService(ALARM_SERVICE);
-        final Intent intent = new Intent(getContext(), MessageReceiver.class);
+        final Intent intent = new Intent(getContext(), AlarmBroadcastReceiver.class);
 
-        intent.putExtra("task", "deadline an hour");
-        int millis = (int)(calendar.getTimeInMillis() - System.currentTimeMillis() - DateUtils.HOUR_IN_MILLIS);
+        intent.putExtra("task", note.getId());
+        int millis = (int)(calendar.getTimeInMillis() - DateUtils.HOUR_IN_MILLIS);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), millis, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (alarmManager != null) {
             int SDK_INT = Build.VERSION.SDK_INT;
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {                alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             } else if (SDK_INT < Build.VERSION_CODES.M) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             } else {
