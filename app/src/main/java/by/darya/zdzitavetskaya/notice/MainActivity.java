@@ -19,7 +19,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.constants.Constants;
 import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.presenter.TabPresenter;
 import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.view.TabView;
@@ -28,7 +27,7 @@ import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity implements TabView, UpdateListener {
+public class MainActivity extends MvpAppCompatActivity implements TabView {
 
     @InjectPresenter
     TabPresenter tabPresenter;
@@ -53,8 +52,6 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
             NoticeDialog noticeDialog = new NoticeDialog();
             noticeDialog.setCancelable(false);
             noticeDialog.show(getSupportFragmentManager(), "dialog");
-//            NoticeDialog noticeDialog = new NoticeDialog(MainActivity.this, MainActivity.this);
-//            noticeDialog.showDialog();
         }
     }
 
@@ -159,11 +156,6 @@ public class MainActivity extends MvpAppCompatActivity implements TabView, Updat
             ImageView ivTabIcon = customView.findViewById(R.id.iv_tab_icon);
             ivTabIcon.setColorFilter(getResources().getColor(color));
         }
-    }
-
-    @Override
-    public void update(String name, String description) {
-
     }
 
     @Override

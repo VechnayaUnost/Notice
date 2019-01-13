@@ -18,16 +18,19 @@ public class NoteModel extends RealmObject {
 
     private Date date;
 
+    private Date dateDeadline;
+
     public NoteModel() {
 
     }
 
-    public NoteModel(String title, String description, boolean isSolved) {
+    public NoteModel(String title, String description, boolean isSolved, Date dateDeadline) {
         id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.isSolved = isSolved;
         date = new Date();
+        this.dateDeadline = dateDeadline;
     }
 
     public String getId() {
@@ -68,5 +71,13 @@ public class NoteModel extends RealmObject {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getDateDeadline() {
+        return dateDeadline;
+    }
+
+    public void setDateDeadline(Date dateDeadline) {
+        this.dateDeadline = dateDeadline;
     }
 }
