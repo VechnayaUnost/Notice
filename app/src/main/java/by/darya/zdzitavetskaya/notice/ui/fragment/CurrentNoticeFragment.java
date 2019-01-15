@@ -1,28 +1,64 @@
 package by.darya.zdzitavetskaya.notice.ui.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.List;
 
-import butterknife.OnClick;
+import butterknife.BindView;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
+import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter.CurrentNoticePresenter;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CurrentNoticeView;
+import by.darya.zdzitavetskaya.notice.ui.adapter.BaseAdapter;
 
 public class CurrentNoticeFragment extends BaseFragment implements CurrentNoticeView, UpdateListener {
 
     @InjectPresenter
-    CurrentNoticePresenter mCurrentNoticePresenter;
+    CurrentNoticePresenter currentNoticePresenter;
+
+    @BindView(R.id.rv_notice)
+    RecyclerView recyclerView;
+
+    BaseAdapter adapter;
 
     public CurrentNoticeFragment() {
         // Required empty public constructor
     }
 
-    @OnClick(R.id.btn_show_dialog)
-    void showDialog() {
-        //
+
+//    @OnClick(R.id.cv_item_note)
+//    public void onItemNoteClick() {
+//        NoticeDialog noticeDialog = new NoticeDialog();
+//        noticeDialog.setCancelable(false);
+//        noticeDialog.show(getFragmentManager(), "dialog");
+//    }
+
+    @Override
+    public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setupRecycler();
+        currentNoticePresenter.getNoticesFromDatabase();
+        setupAdapter();
+    }
+
+    public void setupAdapter() {
+        adapter = new BaseAdapter();
+        recyclerView.setAdapter(adapter);
+    }
+
+    public void setupRecycler() {
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        getRecycler().setLayoutManager(layoutManager);
     }
 
     @Override
@@ -31,8 +67,15 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     }
 
     @Override
-    public void onNoticesSuccess(final List<NoteModel> notices) {
-        //display all notices on the screen
+    public RecyclerView getRecycler() {
+        return recyclerView;
+    }
+
+    @Override
+    public void onNoticesSuccess(final List<BaseViewModel> notices) {
+        ((BaseAdapter) recyclerView.getAdapter()).setItems(notices);
+//        ((NoticeAdapter) recyclerView.getAdapter()).getNotes().addAll(notices);
+//        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override

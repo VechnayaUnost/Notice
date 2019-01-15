@@ -9,4 +9,6 @@ public class Constants {
     public static final int CURRENT_NOTICE_TAB = 0;
 
     public static final int COMPLETED_NOTICE_TAB = 1;
+
+    public static final String FIELD_NAME_DATE = "date";
 }
