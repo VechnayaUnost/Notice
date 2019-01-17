@@ -5,13 +5,10 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.view.NoticeViewModel;
 
 public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> {
-
-    private Unbinder unbinder;
 
     @BindView(R.id.tv_item_note_title)
     TextView tvItemNoteTitle;
@@ -27,7 +24,7 @@ public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> {
 
     public NoticeViewHolder(View itemView) {
         super(itemView);
-        unbinder = ButterKnife.bind(this, itemView);
+        ButterKnife.bind(this, itemView);
     }
 
     @Override
@@ -44,7 +41,5 @@ public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> {
         tvItemNoteDescription.setText(null);
         tvItemNoteDate.setText(null);
         tvItemNoteDeadline.setText(null);
-
-        unbinder.unbind();
     }
 }

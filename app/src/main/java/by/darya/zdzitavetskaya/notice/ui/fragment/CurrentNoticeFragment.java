@@ -34,14 +34,6 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
         // Required empty public constructor
     }
 
-
-//    @OnClick(R.id.cv_item_note)
-//    public void onItemNoteClick() {
-//        NoticeDialog noticeDialog = new NoticeDialog();
-//        noticeDialog.setCancelable(false);
-//        noticeDialog.show(getFragmentManager(), "dialog");
-//    }
-
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -74,8 +66,6 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     @Override
     public void onNoticesSuccess(final List<BaseViewModel> notices) {
         ((BaseAdapter) recyclerView.getAdapter()).setItems(notices);
-//        ((NoticeAdapter) recyclerView.getAdapter()).getNotes().addAll(notices);
-//        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override

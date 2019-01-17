@@ -12,5 +12,4 @@ public interface CurrentNoticeView extends MvpView {
     void onNoticesSuccess(List<BaseViewModel> notices);
 
     void onNoticeSuccess(NoteModel notice);
-
 }
