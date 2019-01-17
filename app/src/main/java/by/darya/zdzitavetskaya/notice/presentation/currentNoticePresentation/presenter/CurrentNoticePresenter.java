@@ -6,6 +6,10 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
+import by.darya.zdzitavetskaya.notice.App;
+import by.darya.zdzitavetskaya.notice.common.manager.NetworkManager;
 import by.darya.zdzitavetskaya.notice.constants.Constants;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
@@ -14,7 +18,6 @@ import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.vie
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -22,16 +25,20 @@ import io.realm.Sort;
 @InjectViewState
 public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
 
-    private final Realm realm;
+    @Inject
+    Realm realm;
+
+    @Inject
+    NetworkManager networkManager;
+
+    private boolean isLoading;
 
     public CurrentNoticePresenter() {
-        realm = Realm.getDefaultInstance();
+        App.getAppComponent().inject(this);
     }
 
     public void getNoticesFromDatabase() {
         loadData();
-//        final RealmResults<NoteModel> notices = realm.where(NoteModel.class).findAll();
-//        getViewState().onNoticesSuccess(notices);
     }
 
 //    public void getNoticeFromDatabase(final String id) {
@@ -51,17 +58,27 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
                     .where(NoteModel.class)
                     .sort(Constants.FIELD_NAME_DATE, Sort.DESCENDING)
                     .findAll();
-            return realm.copyToRealm(realmResults);
+            return realm.copyFromRealm(realmResults);
         };
     }
 
     private void loadData() {
+        if(isLoading) {
+            return;
+        }
+        isLoading = true;
         CompositeDisposable compositeDisposable = new CompositeDisposable();
-        compositeDisposable.add(
-                onLoadFromDb()
+        compositeDisposable.add(networkManager.getNetworkObservable()
+                .flatMap(aBoolean -> {
+                    if(!aBoolean)
+                        return Observable.empty();
+
+                    return aBoolean
+                            ?onLoadFromDb() //need to load from network
+                            :onLoadFromDb();
+                })
                         .toList()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
                         .subscribe(
                                 notes -> getViewState().onNoticesSuccess(notes),
                                 Throwable::printStackTrace

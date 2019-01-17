@@ -3,15 +3,19 @@ package by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.pre
 import com.arellomobile.mvp.MvpPresenter;
 import com.arellomobile.mvp.MvpView;
 
+import javax.inject.Inject;
+
+import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import io.realm.Realm;
 
 public class NoticeDialogPresenter extends MvpPresenter<MvpView> {
 
-    private final Realm realm;
+    @Inject
+    Realm realm;
 
     public NoticeDialogPresenter() {
-        realm = Realm.getDefaultInstance();
+        App.getAppComponent().inject(this);
     }
 
     public void addNoteInDatabase(final NoteModel notice) {
