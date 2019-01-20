@@ -9,6 +9,10 @@
     <string name="description">description</string>
     <string name="date">choose date</string>
     <string name="time">choose time</string>
+    <string name="action_search">search</string>
+    <string name="color_pink">pink</string>
+    <string name="color_orange">orange</string>
+    <string name="color_blue">blue</string>
 
     <string-array name="items">
         <item>note</item>

@@ -1,11 +1,16 @@
 package by.darya.zdzitavetskaya.notice;
 
+import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -19,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import by.darya.zdzitavetskaya.notice.common.utility.Preference;
 import by.darya.zdzitavetskaya.notice.constants.Constants;
 import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.presenter.TabPresenter;
 import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.view.TabView;
@@ -58,13 +64,14 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(bottomAppBar);
-
+        setFabColor();
         setupViewPager(viewPager);
         initTabBarLayout(viewPager);
     }
@@ -143,6 +150,10 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
         fab.setImageDrawable(ContextCompat.getDrawable(this, id));
     }
 
+    private void setFabColor() {
+        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Preference.getColor(this))));
+    }
+
     @Override
     public void onTabChanged(TabLayout.Tab tab, int color, float size) {
         View customView = tab.getCustomView();
@@ -156,6 +167,32 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
             ImageView ivTabIcon = customView.findViewById(R.id.iv_tab_icon);
             ivTabIcon.setColorFilter(getResources().getColor(color));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.bottomappbar_menu, menu);
+        return true;
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.color_pink:
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                Preference.setColor(this, getResources().getString(R.color.colorAccent));
+                break;
+            case R.id.color_orange:
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorOrange)));
+                Preference.setColor(this, getResources().getString(R.color.colorOrange));
+                break;
+            case R.id.color_blue:
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlue)));
+                Preference.setColor(this, getResources().getString(R.color.colorBlue));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
