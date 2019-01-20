@@ -19,7 +19,7 @@ public abstract class BaseFragment extends MvpAppCompatFragment {
 
     private Unbinder unbinder;
 
-    public abstract int getLayoutFragment();
+    protected abstract int getLayoutFragment();
 
     public abstract RecyclerView getRecycler();
 

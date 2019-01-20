@@ -13,9 +13,9 @@ import by.darya.zdzitavetskaya.notice.ui.holder.BaseViewHolder;
 
 public class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder<BaseViewModel>> {
 
-    private List<BaseViewModel> list = new ArrayList<>();
+    private final List<BaseViewModel> list = new ArrayList<>();
 
-    private ArrayMap<Integer, BaseViewModel> typeInstances = new ArrayMap<>();
+    private final ArrayMap<Integer, BaseViewModel> typeInstances = new ArrayMap<>();
 
     @NonNull
     @Override

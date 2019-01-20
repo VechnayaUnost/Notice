@@ -24,7 +24,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.common.utility.Preference;
-import by.darya.zdzitavetskaya.notice.constants.Constants;
+import by.darya.zdzitavetskaya.notice.common.constants.Constants;
+import by.darya.zdzitavetskaya.notice.ui.adapter.ViewPagerAdapter;
 import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
@@ -130,7 +131,7 @@ public class MainActivity extends MvpAppCompatActivity {
         }
     }
 
-    public void setFab() {
+    private void setFab() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
             setFabIcon(R.drawable.ic_delete_white);
@@ -148,7 +149,7 @@ public class MainActivity extends MvpAppCompatActivity {
         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Preference.getColor(this))));
     }
 
-    public void onTabChanged(TabLayout.Tab tab, int color, float size) {
+    private void onTabChanged(TabLayout.Tab tab, int color, float size) {
         View customView = tab.getCustomView();
         if (customView != null) {
             TextView tvTabName = customView.findViewById(R.id.tv_tab_name);

@@ -1,4 +1,4 @@
-package by.darya.zdzitavetskaya.notice;
+package by.darya.zdzitavetskaya.notice.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +11,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentTitleList = new ArrayList<>();
 
-    ViewPagerAdapter(FragmentManager manager) {
+    public ViewPagerAdapter(FragmentManager manager) {
         super(manager);
     }
 
@@ -25,7 +25,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return fragmentList.size();
     }
 
-    void addFragment(Fragment fragment, String title) {
+    public void addFragment(Fragment fragment, String title) {
         fragmentList.add(fragment);
         fragmentTitleList.add(title);
     }

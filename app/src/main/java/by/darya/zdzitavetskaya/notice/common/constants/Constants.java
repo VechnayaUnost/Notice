@@ -1,4 +1,4 @@
-package by.darya.zdzitavetskaya.notice.constants;
+package by.darya.zdzitavetskaya.notice.common.constants;
 
 import android.os.Message;
 

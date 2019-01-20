@@ -9,10 +9,10 @@ import by.darya.zdzitavetskaya.notice.ui.holder.NoticeViewHolder;
 
 public class NoticeViewModel extends BaseViewModel {
 
-    private String title;
-    private String description;
-    private String date;
-    private String dateDeadline;
+    private final String title;
+    private final String description;
+    private final String date;
+    private final String dateDeadline;
 
     public NoticeViewModel(NoteModel note) {
         this.title = note.getTitle();

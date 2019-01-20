@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.common.manager.NetworkManager;
-import by.darya.zdzitavetskaya.notice.constants.Constants;
+import by.darya.zdzitavetskaya.notice.common.constants.Constants;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
 import by.darya.zdzitavetskaya.notice.model.view.NoticeViewModel;

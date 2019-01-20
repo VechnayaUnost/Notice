@@ -28,7 +28,7 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     @BindView(R.id.rv_notice)
     RecyclerView recyclerView;
 
-    BaseAdapter adapter;
+    private BaseAdapter adapter;
 
     public CurrentNoticeFragment() {
         // Required empty public constructor
@@ -43,12 +43,12 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
         setupAdapter();
     }
 
-    public void setupAdapter() {
+    private void setupAdapter() {
         adapter = new BaseAdapter();
         recyclerView.setAdapter(adapter);
     }
 
-    public void setupRecycler() {
+    private void setupRecycler() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         getRecycler().setLayoutManager(layoutManager);
     }

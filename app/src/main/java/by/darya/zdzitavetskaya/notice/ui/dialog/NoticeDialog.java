@@ -190,7 +190,8 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
 
         if (alarmManager != null) {
             int SDK_INT = Build.VERSION.SDK_INT;
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {                alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             } else if (SDK_INT < Build.VERSION_CODES.M) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
             } else {

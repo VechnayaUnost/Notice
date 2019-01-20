@@ -29,7 +29,7 @@ public class App extends Application {
         setLeakCanary();
     }
 
-    public void setLeakCanary() {
+    private void setLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }

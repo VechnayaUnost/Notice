@@ -2,7 +2,7 @@ package by.darya.zdzitavetskaya.notice.utils.realm;
 
 import android.support.annotation.NonNull;
 
-import by.darya.zdzitavetskaya.notice.constants.Constants;
+import by.darya.zdzitavetskaya.notice.common.constants.Constants;
 import io.realm.DynamicRealm;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;

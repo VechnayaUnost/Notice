@@ -13,7 +13,7 @@ import io.realm.internal.Util;
 
 public class NetworkManager {
 
-    private Context context;
+    private final Context context;
 
     public NetworkManager(Context context) {
         this.context = context;
