@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item
+        android:id="@+id/app_bar_search"
+        android:icon="@drawable/ic_search_black"
+        android:title="@string/action_search"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        />
+
+    <group>
+
+        <item
+            android:id="@+id/color_pink"
+            android:title="@string/color_pink"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/color_orange"
+            android:title="@string/color_orange"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/color_blue"
+            android:title="@string/color_blue"
+            app:showAsAction="never"
+            />
+
+    </group>
+
+</menu>

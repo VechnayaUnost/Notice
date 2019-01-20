@@ -6,13 +6,15 @@ import android.content.Context;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import by.darya.zdzitavetskaya.notice.utils.realm.CustomRealmConfiguration;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
+import by.darya.zdzitavetskaya.notice.di.component.AppComponent;
+import by.darya.zdzitavetskaya.notice.di.component.DaggerAppComponent;
+import by.darya.zdzitavetskaya.notice.di.module.ApplicationModule;
 
 public class App extends Application {
 
     private RefWatcher refWatcher;
+
+    private static AppComponent sAppComponent;
 
     public static RefWatcher getRefWatcher(Context context) {
         App application = (App) context.getApplicationContext();
@@ -23,14 +25,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        initComponent();
         setLeakCanary();
-        setRealm();
-    }
-
-    public void setRealm() {
-        Realm.init(this);
-        RealmConfiguration realmConfiguration = CustomRealmConfiguration.getRealmConfiguration();
-        Realm.setDefaultConfiguration(realmConfiguration);
     }
 
     public void setLeakCanary() {
@@ -39,4 +35,16 @@ public class App extends Application {
         }
         refWatcher = LeakCanary.install(this);
     }
+
+    private void initComponent() {
+        sAppComponent = DaggerAppComponent
+                .builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
+    }
+
+    public static AppComponent getAppComponent() {
+        return sAppComponent;
+    }
+
 }

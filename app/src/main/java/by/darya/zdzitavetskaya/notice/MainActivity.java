@@ -1,36 +1,36 @@
 package by.darya.zdzitavetskaya.notice;
 
+import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.crashlytics.android.Crashlytics;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import by.darya.zdzitavetskaya.notice.common.utility.Preference;
 import by.darya.zdzitavetskaya.notice.constants.Constants;
-import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.presenter.TabPresenter;
-import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.view.TabView;
 import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity implements TabView {
-
-    @InjectPresenter
-    TabPresenter tabPresenter;
+public class MainActivity extends MvpAppCompatActivity {
 
     @BindView(R.id.bottom_app_bar)
     BottomAppBar bottomAppBar;
@@ -58,13 +58,14 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(bottomAppBar);
-
+        setFabColor();
         setupViewPager(viewPager);
         initTabBarLayout(viewPager);
     }
@@ -107,14 +108,14 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tabPresenter.onTabChanged(tab, android.R.color.white, 14);
+                onTabChanged(tab, android.R.color.white, 14);
                 setFab();
                 bottomAppBar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tabPresenter.onTabChanged(tab, android.R.color.black, 12);
+                onTabChanged(tab, android.R.color.black, 12);
             }
 
             @Override
@@ -125,7 +126,7 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
 
         TabLayout.Tab currentTab = tabs.getTabAt(Constants.CURRENT_NOTICE_TAB);
         if (currentTab != null) {
-            tabPresenter.onTabChanged(currentTab, android.R.color.white, 14);
+            onTabChanged(currentTab, android.R.color.white, 14);
         }
     }
 
@@ -143,7 +144,10 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
         fab.setImageDrawable(ContextCompat.getDrawable(this, id));
     }
 
-    @Override
+    private void setFabColor() {
+        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Preference.getColor(this))));
+    }
+
     public void onTabChanged(TabLayout.Tab tab, int color, float size) {
         View customView = tab.getCustomView();
         if (customView != null) {
@@ -156,6 +160,32 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
             ImageView ivTabIcon = customView.findViewById(R.id.iv_tab_icon);
             ivTabIcon.setColorFilter(getResources().getColor(color));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.bottomappbar_menu, menu);
+        return true;
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.color_pink:
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                Preference.setColor(this, getResources().getString(R.color.colorAccent));
+                break;
+            case R.id.color_orange:
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorOrange)));
+                Preference.setColor(this, getResources().getString(R.color.colorOrange));
+                break;
+            case R.id.color_blue:
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlue)));
+                Preference.setColor(this, getResources().getString(R.color.colorBlue));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
