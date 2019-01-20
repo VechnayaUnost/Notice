@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.crashlytics.android.Crashlytics;
 
 import butterknife.BindView;
@@ -26,17 +25,12 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.common.utility.Preference;
 import by.darya.zdzitavetskaya.notice.constants.Constants;
-import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.presenter.TabPresenter;
-import by.darya.zdzitavetskaya.notice.presentation.tabPresentation.view.TabView;
 import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity implements TabView {
-
-    @InjectPresenter
-    TabPresenter tabPresenter;
+public class MainActivity extends MvpAppCompatActivity {
 
     @BindView(R.id.bottom_app_bar)
     BottomAppBar bottomAppBar;
@@ -114,14 +108,14 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tabPresenter.onTabChanged(tab, android.R.color.white, 14);
+                onTabChanged(tab, android.R.color.white, 14);
                 setFab();
                 bottomAppBar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tabPresenter.onTabChanged(tab, android.R.color.black, 12);
+                onTabChanged(tab, android.R.color.black, 12);
             }
 
             @Override
@@ -132,7 +126,7 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
 
         TabLayout.Tab currentTab = tabs.getTabAt(Constants.CURRENT_NOTICE_TAB);
         if (currentTab != null) {
-            tabPresenter.onTabChanged(currentTab, android.R.color.white, 14);
+            onTabChanged(currentTab, android.R.color.white, 14);
         }
     }
 
@@ -154,7 +148,6 @@ public class MainActivity extends MvpAppCompatActivity implements TabView {
         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Preference.getColor(this))));
     }
 
-    @Override
     public void onTabChanged(TabLayout.Tab tab, int color, float size) {
         View customView = tab.getCustomView();
         if (customView != null) {
