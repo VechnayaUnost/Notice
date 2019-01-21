@@ -1,15 +1,17 @@
 package by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.presenter;
 
+import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.arellomobile.mvp.MvpView;
 
 import javax.inject.Inject;
 
 import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
+import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.view.NoticeDialogView;
 import io.realm.Realm;
 
-public class NoticeDialogPresenter extends MvpPresenter<MvpView> {
+@InjectViewState
+public class NoticeDialogPresenter extends MvpPresenter<NoticeDialogView> {
 
     @Inject
     Realm realm;
@@ -20,5 +22,10 @@ public class NoticeDialogPresenter extends MvpPresenter<MvpView> {
 
     public void addNoteInDatabase(final NoteModel notice) {
         realm.executeTransaction(realm -> realm.insertOrUpdate(notice));    //don't use viewState
+    }
+
+    public void getNoticeFromDatabase(final String id) {
+        final NoteModel notice = realm.where(NoteModel.class).equalTo("id", id).findFirst();
+        getViewState().onNoticeSuccess(notice);
     }
 }

@@ -2,6 +2,7 @@ package by.darya.zdzitavetskaya.notice.ui.dialog;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -25,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.arellomobile.mvp.MvpAppCompatDialogFragment;
-import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.Calendar;
@@ -40,16 +40,20 @@ import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.model.receiver.AlarmBroadcastReceiver;
 import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.presenter.NoticeDialogPresenter;
+import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.view.NoticeDialogView;
 
 import static android.content.Context.ALARM_SERVICE;
 
-public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class NoticeDialog extends MvpAppCompatDialogFragment implements NoticeDialogView, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+    private static final String ARG_ID = "id";
 
     private Unbinder unbinder;
     private String title;
     private String description;
     private Calendar calendar = Calendar.getInstance();
     private NoteModel note;
+    private String id;
 
     private DatePickerFragment datePickerFragment;
     private TimePickerFragment timePickerFragment;
@@ -82,6 +86,31 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
     LinearLayout llTaskContainer;
 
     private int selectedItem = -1;
+
+    public NoticeDialog() {
+
+    }
+
+    public static NoticeDialog newInstance(String id) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ID, id);
+
+        NoticeDialog noticeDialog = new NoticeDialog();
+        noticeDialog.setArguments(args);
+
+        return noticeDialog;
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        id = (String) getArguments().getSerializable(ARG_ID);
+        if (id != null) {
+            noticeDialogPresenter.getNoticeFromDatabase(id);
+        }
+
+        return super.onCreateDialog(savedInstanceState);
+    }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -136,10 +165,18 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
         }
 
         if (selectedItem == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
-            note = new NoteModel(title, description, false, calendar.getTime());
+            if (id == null) {
+                note = new NoteModel(title, description, false, calendar.getTime());
+            } else {
+                note = new NoteModel(id, title, description, false, calendar.getTime());
+            }
             setupAlarm();
         } else {
-            note = new NoteModel(title, description, false, null);
+            if (id == null) {
+                note = new NoteModel(title, description, false, null);
+            } else {
+                note = new NoteModel(id, title, description, false, null);
+            }
         }
 
         noticeDialogPresenter.addNoteInDatabase(note);
@@ -219,5 +256,28 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements MvpView,
         spinner.setAdapter(spinnerAdapter);
 
         spinner.setSelection(0);
+    }
+
+    @Override
+    public void onNoticeSuccess(NoteModel notice) {
+        etTitle.setText(notice.getTitle());
+        etDescription.setText(notice.getDescription());
+
+        if (notice.getDateDeadline() != null) {
+            spinner.setSelection(1);
+            llTaskContainer.setVisibility(View.VISIBLE);
+
+            calendar = Calendar.getInstance();
+            calendar.setTime(notice.getDateDeadline());
+
+            btnDate.setText(String.format("%s-%s-%s",
+                    String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)),
+                    String.valueOf(calendar.get(Calendar.MONTH)),
+                    String.valueOf(calendar.get(Calendar.YEAR))));
+
+            btnTime.setText(String.format("%s:%s",
+                    String.valueOf(calendar.get(Calendar.HOUR)),
+                    String.valueOf(calendar.get(Calendar.MINUTE))));
+        }
     }
 }

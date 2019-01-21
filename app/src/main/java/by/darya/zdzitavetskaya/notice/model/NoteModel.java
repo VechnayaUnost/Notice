@@ -33,6 +33,15 @@ public class NoteModel extends RealmObject {
         this.dateDeadline = dateDeadline;
     }
 
+    public NoteModel(String id, String title, String description, boolean isSolved, Date dateDeadline) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.isSolved = isSolved;
+        date = new Date();
+        this.dateDeadline = dateDeadline;
+    }
+
     public String getId() {
         return id;
     }

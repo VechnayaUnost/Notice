@@ -23,8 +23,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import by.darya.zdzitavetskaya.notice.common.utility.Preference;
 import by.darya.zdzitavetskaya.notice.common.constants.Constants;
+import by.darya.zdzitavetskaya.notice.common.utility.Preference;
+import by.darya.zdzitavetskaya.notice.di.component.DaggerMainActivityComponent;
+import by.darya.zdzitavetskaya.notice.di.component.MainActivityComponent;
+import by.darya.zdzitavetskaya.notice.di.module.MainActivityModule;
 import by.darya.zdzitavetskaya.notice.ui.adapter.ViewPagerAdapter;
 import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
@@ -47,10 +50,23 @@ public class MainActivity extends MvpAppCompatActivity {
 
     Unbinder unbinder;
 
+    private static MainActivityComponent sMainActivityComponent;
+
+    private void initComponent() {
+        sMainActivityComponent = DaggerMainActivityComponent
+                .builder()
+                .mainActivityModule(new MainActivityModule(MainActivity.this))
+                .build();
+    }
+
+    public static MainActivityComponent getMainActivityComponent() {
+        return sMainActivityComponent;
+    }
+
     @OnClick(R.id.fab)
     public void fabClick() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
-            NoticeDialog noticeDialog = new NoticeDialog();
+            NoticeDialog noticeDialog = NoticeDialog.newInstance(null);
             noticeDialog.setCancelable(false);
             noticeDialog.show(getSupportFragmentManager(), "dialog");
         }
@@ -59,6 +75,8 @@ public class MainActivity extends MvpAppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initComponent();
 
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);

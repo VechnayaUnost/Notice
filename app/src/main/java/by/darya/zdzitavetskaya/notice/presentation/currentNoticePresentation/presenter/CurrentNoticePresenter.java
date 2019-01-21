@@ -41,11 +41,6 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
         loadData();
     }
 
-//    public void getNoticeFromDatabase(final String id) {
-//        final NoteModel notice = realm.where(NoteModel.class).equalTo("id", id).findFirst();
-//        getViewState().onNoticeSuccess(notice);
-//    }
-
     private Observable<BaseViewModel> onLoadFromDb() {
         return Observable.fromCallable(getCallableNoteList())
                 .flatMap(Observable::fromIterable)

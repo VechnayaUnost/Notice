@@ -9,12 +9,14 @@ import by.darya.zdzitavetskaya.notice.ui.holder.NoticeViewHolder;
 
 public class NoticeViewModel extends BaseViewModel {
 
+    private final String id;
     private final String title;
     private final String description;
     private final String date;
     private final String dateDeadline;
 
     public NoticeViewModel(NoteModel note) {
+        this.id = note.getId();
         this.title = note.getTitle();
         this.description = note.getDescription();
         this.date = Utility.getFormatDate(note.getDate());
@@ -29,6 +31,10 @@ public class NoticeViewModel extends BaseViewModel {
     @Override
     protected BaseViewHolder onCreateViewHolder(View view) {
         return new NoticeViewHolder(view);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {
