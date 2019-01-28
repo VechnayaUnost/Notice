@@ -24,17 +24,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.common.constants.Constants;
+import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.common.utility.Preference;
-import by.darya.zdzitavetskaya.notice.di.component.DaggerMainActivityComponent;
-import by.darya.zdzitavetskaya.notice.di.component.MainActivityComponent;
-import by.darya.zdzitavetskaya.notice.di.module.MainActivityModule;
 import by.darya.zdzitavetskaya.notice.ui.adapter.ViewPagerAdapter;
 import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity {
+public class MainActivity extends MvpAppCompatActivity implements UpdateListener {
 
     @BindView(R.id.bottom_app_bar)
     BottomAppBar bottomAppBar;
@@ -49,34 +47,20 @@ public class MainActivity extends MvpAppCompatActivity {
     FloatingActionButton fab;
 
     Unbinder unbinder;
-
-    private static MainActivityComponent sMainActivityComponent;
-
-    private void initComponent() {
-        sMainActivityComponent = DaggerMainActivityComponent
-                .builder()
-                .mainActivityModule(new MainActivityModule(MainActivity.this))
-                .build();
-    }
-
-    public static MainActivityComponent getMainActivityComponent() {
-        return sMainActivityComponent;
-    }
+    ViewPagerAdapter adapter;
 
     @OnClick(R.id.fab)
     public void fabClick() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
             NoticeDialog noticeDialog = NoticeDialog.newInstance(null);
             noticeDialog.setCancelable(false);
-            noticeDialog.show(getSupportFragmentManager(), "dialog");
+            noticeDialog.show(getSupportFragmentManager(), getString(R.string.dialog));
         }
     }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        initComponent();
 
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
@@ -90,7 +74,7 @@ public class MainActivity extends MvpAppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new CurrentNoticeFragment(), getString(R.string.current));
         adapter.addFragment(new CompletedNoticeFragment(), getString(R.string.completed));
         viewPager.setAdapter(adapter);
@@ -205,6 +189,12 @@ public class MainActivity extends MvpAppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNoticesUpdate() {
+        CurrentNoticeFragment currentNoticeFragment = (CurrentNoticeFragment) adapter.getItem(0);
+        currentNoticeFragment.updateList();
     }
 
     @Override

@@ -31,10 +31,21 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
     @Inject
     NetworkManager networkManager;
 
-    private boolean isLoading;
-
     public CurrentNoticePresenter() {
         App.getAppComponent().inject(this);
+    }
+
+    public void updateNote(final NoteModel notice) {
+        realm.beginTransaction();
+        notice.setSolved(true);
+        realm.insertOrUpdate(notice);
+        realm.commitTransaction();
+        //realm.executeTransaction(realm -> realm.insertOrUpdate(notice));
+    }
+
+    public void getNoteFromDatabase(final String id) {
+        final NoteModel notice = realm.where(NoteModel.class).equalTo("id", id).findFirst();
+        getViewState().onNoticeSuccess(notice);
     }
 
     public void getNoticesFromDatabase() {
@@ -51,6 +62,7 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
         return () -> {
             RealmResults<NoteModel> realmResults = realm
                     .where(NoteModel.class)
+                    .equalTo("isSolved", false)
                     .sort(Constants.FIELD_NAME_DATE, Sort.DESCENDING)
                     .findAll();
             return realm.copyFromRealm(realmResults);
@@ -58,10 +70,6 @@ public class CurrentNoticePresenter extends MvpPresenter<CurrentNoticeView>{
     }
 
     private void loadData() {
-        if(isLoading) {
-            return;
-        }
-        isLoading = true;
         CompositeDisposable compositeDisposable = new CompositeDisposable();
         compositeDisposable.add(networkManager.getNetworkObservable()
                 .flatMap(aBoolean -> {

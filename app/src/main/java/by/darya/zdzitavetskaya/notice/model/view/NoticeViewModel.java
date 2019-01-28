@@ -2,6 +2,7 @@ package by.darya.zdzitavetskaya.notice.model.view;
 
 import android.view.View;
 
+import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.common.utility.Utility;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.ui.holder.BaseViewHolder;
@@ -14,6 +15,7 @@ public class NoticeViewModel extends BaseViewModel {
     private final String description;
     private final String date;
     private final String dateDeadline;
+    private final boolean isSolved;
 
     public NoticeViewModel(NoteModel note) {
         this.id = note.getId();
@@ -21,16 +23,17 @@ public class NoticeViewModel extends BaseViewModel {
         this.description = note.getDescription();
         this.date = Utility.getFormatDate(note.getDate());
         this.dateDeadline = Utility.getFormatDate(note.getDateDeadline());
+        this.isSolved = note.isSolved();
     }
 
     @Override
     public LayoutTypes getType() {
-        return LayoutTypes.CurrentNotice;
+        return LayoutTypes.NoticeItem;
     }
 
     @Override
-    protected BaseViewHolder onCreateViewHolder(View view) {
-        return new NoticeViewHolder(view);
+    protected BaseViewHolder onCreateViewHolder(Listener listener, View view) {
+        return new NoticeViewHolder(listener, view);
     }
 
     public String getId() {
@@ -51,5 +54,9 @@ public class NoticeViewModel extends BaseViewModel {
 
     public String getDateDeadline() {
         return dateDeadline;
+    }
+
+    public boolean isSolved() {
+        return isSolved;
     }
 }

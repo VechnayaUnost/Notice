@@ -1,23 +1,20 @@
 package by.darya.zdzitavetskaya.notice.ui.holder;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import by.darya.zdzitavetskaya.notice.MainActivity;
+import butterknife.OnClick;
 import by.darya.zdzitavetskaya.notice.R;
+import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.model.view.NoticeViewModel;
-import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 
 public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> implements View.OnClickListener{
 
     private String id;
-
-    @Inject
-    MainActivity mainActivity;
+    private Listener listener;
 
     @BindView(R.id.tv_item_note_title)
     TextView tvItemNoteTitle;
@@ -31,9 +28,12 @@ public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> implements
     @BindView(R.id.tv_item_note_deadline)
     TextView tvItemNoteDeadline;
 
-    public NoticeViewHolder(View itemView) {
+    @BindView(R.id.cb_item_note_status)
+    CheckBox cbItemNoteStatus;
+
+    public NoticeViewHolder(Listener listener, View itemView) {
         super(itemView);
-        MainActivity.getMainActivityComponent().inject(this);
+        this.listener = listener;
         itemView.setOnClickListener(this);
         ButterKnife.bind(this, itemView);
     }
@@ -45,6 +45,7 @@ public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> implements
         tvItemNoteDescription.setText(noticeViewModel.getDescription());
         tvItemNoteDate.setText(noticeViewModel.getDate());
         tvItemNoteDeadline.setText(noticeViewModel.getDateDeadline());
+        cbItemNoteStatus.setChecked(noticeViewModel.isSolved());
     }
 
     @Override
@@ -55,9 +56,13 @@ public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> implements
         tvItemNoteDeadline.setText(null);
     }
 
+    @OnClick(R.id.cb_item_note_status)
+    void addToSolved() {
+        listener.addToSolved(id, getAdapterPosition());
+    }
+
     @Override
     public void onClick(View v) {
-        NoticeDialog noticeDialog = NoticeDialog.newInstance(id);
-        noticeDialog.show(mainActivity.getSupportFragmentManager(), "dialog");
+        listener.onItemClick(id);
     }
 }

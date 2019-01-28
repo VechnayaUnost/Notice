@@ -13,14 +13,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import by.darya.zdzitavetskaya.notice.R;
-import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
+import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.presenter.CurrentNoticePresenter;
 import by.darya.zdzitavetskaya.notice.presentation.currentNoticePresentation.view.CurrentNoticeView;
 import by.darya.zdzitavetskaya.notice.ui.adapter.BaseAdapter;
+import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 
-public class CurrentNoticeFragment extends BaseFragment implements CurrentNoticeView, UpdateListener {
+public class CurrentNoticeFragment extends BaseFragment implements CurrentNoticeView, Listener {
 
     @InjectPresenter
     CurrentNoticePresenter currentNoticePresenter;
@@ -44,7 +45,7 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     }
 
     private void setupAdapter() {
-        adapter = new BaseAdapter();
+        adapter = new BaseAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -65,16 +66,27 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
 
     @Override
     public void onNoticesSuccess(final List<BaseViewModel> notices) {
-        ((BaseAdapter) recyclerView.getAdapter()).setItems(notices);
+        adapter.setItems(notices);
     }
 
     @Override
     public void onNoticeSuccess(NoteModel notice) {
-        //display notice on the screen
+        currentNoticePresenter.updateNote(notice);
     }
 
     @Override
-    public void update(String name, String description) {
+    public void onItemClick(String id) {
+        NoticeDialog noticeDialog = NoticeDialog.newInstance(id);
+        noticeDialog.show(getActivity().getSupportFragmentManager(), getString(R.string.dialog));
+    }
 
+    @Override
+    public void addToSolved(String id, int position) {
+        currentNoticePresenter.getNoteFromDatabase(id);
+        adapter.deleteItem(position);
+    }
+
+    public void updateList() {
+        currentNoticePresenter.getNoticesFromDatabase();
     }
 }

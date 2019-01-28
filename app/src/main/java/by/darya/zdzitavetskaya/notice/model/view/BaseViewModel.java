@@ -6,20 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import by.darya.zdzitavetskaya.notice.R;
+import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.ui.holder.BaseViewHolder;
 
 public abstract class BaseViewModel {
 
     public abstract LayoutTypes getType();
 
-    public BaseViewHolder createViewHolder(ViewGroup parent) {
-        return onCreateViewHolder(LayoutInflater.from(parent.getContext()).inflate(getType().getResId(), parent, false));
+    public BaseViewHolder createViewHolder(Listener listener, ViewGroup parent) {
+        return onCreateViewHolder(listener, LayoutInflater.from(parent.getContext()).inflate(getType().getResId(), parent, false));
     }
 
-    protected abstract BaseViewHolder onCreateViewHolder(View view);
+    protected abstract BaseViewHolder onCreateViewHolder(Listener listener, View view);
 
     public enum LayoutTypes {
-        CurrentNotice(R.layout.notice_item);
+        NoticeItem(R.layout.notice_item);
 
         private final int id;
 
@@ -31,9 +32,5 @@ public abstract class BaseViewModel {
         public int getResId() {
             return id;
         }
-    }
-
-    public boolean isItemDecorator() {
-        return false;
     }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
 import by.darya.zdzitavetskaya.notice.ui.holder.BaseViewHolder;
 
@@ -17,10 +18,16 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder<BaseViewMod
 
     private final ArrayMap<Integer, BaseViewModel> typeInstances = new ArrayMap<>();
 
+    Listener listener;
+
+    public BaseAdapter(Listener listener){
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public BaseViewHolder<BaseViewModel> onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return typeInstances.get(i).createViewHolder(viewGroup);
+        return typeInstances.get(i).createViewHolder(listener, viewGroup);
     }
 
     @Override
@@ -75,15 +82,9 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder<BaseViewMod
         list.clear();
     }
 
-    public int getRealItemCount() {
-        int count = 0 ;
-        for (int i = 0; i < getItemCount(); i++) {
-            if (!getItem(i).isItemDecorator()) {
-                count++;
-            }
-        }
-
-        return count;
+    public void deleteItem(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
     }
 
     public void insertItem(BaseViewModel newItem) {

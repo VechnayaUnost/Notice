@@ -5,13 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +37,7 @@ import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.R;
+import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import by.darya.zdzitavetskaya.notice.model.receiver.AlarmBroadcastReceiver;
 import by.darya.zdzitavetskaya.notice.presentation.noticeDialogPresentation.presenter.NoticeDialogPresenter;
@@ -48,48 +49,37 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements NoticeDi
 
     private static final String ARG_ID = "id";
 
+    @InjectPresenter
+    NoticeDialogPresenter noticeDialogPresenter;
+
+    @BindView(R.id.et_title)
+    EditText etTitle;
+    @BindView(R.id.et_description)
+    EditText etDescription;
+    @BindView(R.id.spinner)
+    Spinner spinner;
+    @BindView(R.id.btn_OK)
+    Button btnOk;
+    @BindView(R.id.btn_cancel)
+    Button btnCancel;
+    @BindView(R.id.btn_date)
+    Button btnDate;
+    @BindView(R.id.btn_time)
+    Button btnTime;
+    @BindView(R.id.ll_task_container)
+    LinearLayout llTaskContainer;
+
     private Unbinder unbinder;
     private String title;
     private String description;
     private Calendar calendar = Calendar.getInstance();
     private NoteModel note;
     private String id;
-
     private DatePickerFragment datePickerFragment;
     private TimePickerFragment timePickerFragment;
-
-    @InjectPresenter
-    NoticeDialogPresenter noticeDialogPresenter;
-
-    @BindView(R.id.et_title)
-    EditText etTitle;
-
-    @BindView(R.id.et_description)
-    EditText etDescription;
-
-    @BindView(R.id.spinner)
-    Spinner spinner;
-
-    @BindView(R.id.btn_OK)
-    Button btnOk;
-
-    @BindView(R.id.btn_cancel)
-    Button btnCancel;
-
-    @BindView(R.id.btn_date)
-    Button btnDate;
-
-    @BindView(R.id.btn_time)
-    Button btnTime;
-
-    @BindView(R.id.ll_task_container)
-    LinearLayout llTaskContainer;
-
     private int selectedItem = -1;
 
-    public NoticeDialog() {
-
-    }
+    private UpdateListener listener;
 
     public static NoticeDialog newInstance(String id) {
         Bundle args = new Bundle();
@@ -99,6 +89,19 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements NoticeDi
         noticeDialog.setArguments(args);
 
         return noticeDialog;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (UpdateListener) context;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        noticeDialogPresenter.setUi(etTitle,etDescription);
     }
 
     @NonNull
@@ -153,17 +156,6 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements NoticeDi
 
     @OnClick(R.id.btn_OK)
     void onOkClick() {
-
-        if (TextUtils.isEmpty(title)) {
-            etTitle.setError("Title is required");
-            return;
-        }
-
-        if (description.length() < 6) {
-            etDescription.setError("Description must be at least 6 symbols");
-            return;
-        }
-
         if (selectedItem == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
             if (id == null) {
                 note = new NoteModel(title, description, false, calendar.getTime());
@@ -180,6 +172,7 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements NoticeDi
         }
 
         noticeDialogPresenter.addNoteInDatabase(note);
+        listener.onNoticesUpdate();
 
         unbinder.unbind();
         dismiss();
@@ -279,5 +272,10 @@ public class NoticeDialog extends MvpAppCompatDialogFragment implements NoticeDi
                     String.valueOf(calendar.get(Calendar.HOUR)),
                     String.valueOf(calendar.get(Calendar.MINUTE))));
         }
+    }
+
+    @Override
+    public void buttonClickable(boolean isClickable) {
+        btnOk.setEnabled(isClickable);
     }
 }
