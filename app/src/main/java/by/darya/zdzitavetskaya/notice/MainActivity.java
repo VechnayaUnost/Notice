@@ -3,6 +3,10 @@ package by.darya.zdzitavetskaya.notice;
 import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +23,8 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.crashlytics.android.Crashlytics;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,7 +38,7 @@ import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity implements UpdateListener {
+public class MainActivity extends MvpAppCompatActivity implements UpdateListener, SensorEventListener {
 
     @BindView(R.id.bottom_app_bar)
     BottomAppBar bottomAppBar;
@@ -49,18 +55,27 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     Unbinder unbinder;
     ViewPagerAdapter adapter;
 
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private long lastUpdate = 0;
+    private float last_x, last_y, last_z;
+    private static final int SHAKE_THRESHOLD = 5000;
+    private static final int SHAKE_TIMES = 2;
+    private int shakeTimes = 0;
+
     @OnClick(R.id.fab)
     public void fabClick() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
-            NoticeDialog noticeDialog = NoticeDialog.newInstance(null);
-            noticeDialog.setCancelable(false);
-            noticeDialog.show(getSupportFragmentManager(), getString(R.string.dialog));
+            createNewNote();
         }
     }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = Objects.requireNonNull(sensorManager).getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
@@ -71,6 +86,13 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         setFabColor();
         setupViewPager(viewPager);
         initTabBarLayout(viewPager);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -165,6 +187,12 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         }
     }
 
+    private void createNewNote() {
+        NoticeDialog noticeDialog = NoticeDialog.newInstance(null);
+        noticeDialog.setCancelable(false);
+        noticeDialog.show(getSupportFragmentManager(), getString(R.string.dialog));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.bottomappbar_menu, menu);
@@ -195,6 +223,49 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     public void onNoticesUpdate() {
         CurrentNoticeFragment currentNoticeFragment = (CurrentNoticeFragment) adapter.getItem(0);
         currentNoticeFragment.updateList();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensor sensor = event.sensor;
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            long curTime = System.currentTimeMillis();
+
+            if ((curTime - lastUpdate) > 100) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+
+                float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
+
+                if (speed > SHAKE_THRESHOLD) {
+                    shakeTimes++;
+                    if (shakeTimes == SHAKE_TIMES) {
+                        createNewNote();
+                        shakeTimes = 0;
+                    }
+                }
+
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        sensorManager.unregisterListener(this);
     }
 
     @Override
