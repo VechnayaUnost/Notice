@@ -87,6 +87,11 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder<BaseViewMod
         notifyItemRemoved(position);
     }
 
+    public void deleteItems() {
+        clearList();
+        notifyDataSetChanged();
+    }
+
     public void insertItem(BaseViewModel newItem) {
         registerTypeInstance(newItem);
 

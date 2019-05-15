@@ -1,6 +1,7 @@
 package by.darya.zdzitavetskaya.notice;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -13,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.crashlytics.android.Crashlytics;
+import com.ferfalk.simplesearchview.SimpleSearchView;
 
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -32,13 +37,19 @@ import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.common.constants.Constants;
 import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.common.utility.Preference;
+import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
+import by.darya.zdzitavetskaya.notice.presentation.mainPresentation.presenter.MainPresenter;
+import by.darya.zdzitavetskaya.notice.presentation.mainPresentation.view.MainView;
 import by.darya.zdzitavetskaya.notice.ui.adapter.ViewPagerAdapter;
 import by.darya.zdzitavetskaya.notice.ui.dialog.NoticeDialog;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CompletedNoticeFragment;
 import by.darya.zdzitavetskaya.notice.ui.fragment.CurrentNoticeFragment;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends MvpAppCompatActivity implements UpdateListener, SensorEventListener {
+public class MainActivity extends MvpAppCompatActivity implements UpdateListener, SensorEventListener, MainView {
+
+    @InjectPresenter
+    MainPresenter mainPresenter;
 
     @BindView(R.id.bottom_app_bar)
     BottomAppBar bottomAppBar;
@@ -52,8 +63,15 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
+    @BindView(R.id.searchView)
+    SimpleSearchView simpleSearchView;
+
+    @BindView(R.id.no_result_message)
+    TextView tvNoResults;
+
     Unbinder unbinder;
     ViewPagerAdapter adapter;
+    MenuItem itemSearch;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -67,6 +85,8 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     public void fabClick() {
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
             createNewNote();
+        } else if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_END) {
+            mainPresenter.deleteAllSolvedFromDatabase();
         }
     }
 
@@ -86,6 +106,52 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         setFabColor();
         setupViewPager(viewPager);
         initTabBarLayout(viewPager);
+        setupSearchViewListener();
+    }
+
+    private void setupSearchViewListener() {
+        simpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("SimpleSearchView", "Submit:" + query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    onNoticesUpdate();
+                } else {
+                    mainPresenter.searchNotices(newText);
+                }
+                Log.d("SimpleSearchView", "Text changed:" + newText);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextCleared() {
+                Log.d("SimpleSearchView", "Text cleared");
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (simpleSearchView.onBackPressed()) {
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (simpleSearchView.onActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -159,9 +225,12 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
             setFabIcon(R.drawable.ic_delete_white);
+            itemSearch.setVisible(false);
+            simpleSearchView.closeSearch();
         } else {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
             setFabIcon(R.drawable.ic_add_white);
+            itemSearch.setVisible(true);
         }
     }
 
@@ -196,6 +265,10 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.bottomappbar_menu, menu);
+
+        itemSearch = menu.findItem(R.id.app_bar_search);
+        simpleSearchView.setMenuItem(itemSearch);
+
         return true;
     }
 
@@ -273,5 +346,30 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         super.onDestroy();
 
         unbinder.unbind();
+    }
+
+    @Override
+    public void onDeletedAllSolved() {
+        CompletedNoticeFragment completedNoticeFragment = (CompletedNoticeFragment) adapter.getItem(1);
+        completedNoticeFragment.clearList();
+    }
+
+    @Override
+    public void search(final List<BaseViewModel> notices) {
+        if (notices.size() == 0) {
+            showMessage();
+        } else {
+            hideMessage();
+        }
+        CurrentNoticeFragment currentNoticeFragment = (CurrentNoticeFragment) adapter.getItem(0);
+        currentNoticeFragment.onNoticesSuccess(notices);
+    }
+
+    private void showMessage() {
+        tvNoResults.setVisibility(View.VISIBLE);
+    }
+
+    private void hideMessage() {
+        tvNoResults.setVisibility(View.INVISIBLE);
     }
 }

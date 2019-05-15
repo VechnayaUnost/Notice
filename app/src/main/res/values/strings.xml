@@ -13,6 +13,7 @@
     <string name="color_pink">pink</string>
     <string name="color_orange">orange</string>
     <string name="color_blue">blue</string>
+    <string name="no_results">No results</string>
 
     <string-array name="items">
         <item>note</item>

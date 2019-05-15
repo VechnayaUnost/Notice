@@ -12,6 +12,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import javax.inject.Inject;
+
+import by.darya.zdzitavetskaya.notice.App;
 import by.darya.zdzitavetskaya.notice.MainActivity;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
@@ -21,8 +24,13 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
+    @Inject
+    Realm realm;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        App.getAppComponent().inject(this);
+
         if (intent != null) {
             String id = intent.getStringExtra("task");
             showNotification(context, id);
@@ -32,8 +40,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     private void showNotification(Context context, String id) {
         int notifyID = 1;
 
-        //TODO: "to remake this"
-        final Realm realm = Realm.getDefaultInstance();
         final NoteModel notice = realm.where(NoteModel.class).equalTo("id", id).findFirst();
 
         NotificationChannel channel = null;

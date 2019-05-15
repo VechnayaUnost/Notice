@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import java.util.List;
 
 import butterknife.BindView;
+import by.darya.zdzitavetskaya.notice.MainActivity;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
@@ -75,5 +76,9 @@ public class CompletedNoticeFragment extends BaseFragment implements CompletedNo
     @Override
     public void addToSolved(String id, int position) {
 
+    }
+
+    public void clearList() {
+        adapter.deleteItems();
     }
 }
