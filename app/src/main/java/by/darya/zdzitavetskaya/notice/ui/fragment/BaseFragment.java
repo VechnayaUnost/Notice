@@ -1,7 +1,6 @@
 package by.darya.zdzitavetskaya.notice.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -15,13 +14,11 @@ import com.squareup.leakcanary.RefWatcher;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import by.darya.zdzitavetskaya.notice.App;
+import by.darya.zdzitavetskaya.notice.R;
 
 public abstract class BaseFragment extends MvpAppCompatFragment {
 
     private Unbinder unbinder;
-
-    @LayoutRes
-    protected abstract int getLayoutFragment();
 
     public abstract RecyclerView getRecycler();
 
@@ -29,7 +26,7 @@ public abstract class BaseFragment extends MvpAppCompatFragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
-        return inflater.inflate(getLayoutFragment(), container, false);
+        return inflater.inflate(R.layout.fragment_notice, container, false);
     }
 
     @Override

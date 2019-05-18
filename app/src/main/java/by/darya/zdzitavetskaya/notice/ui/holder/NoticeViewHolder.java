@@ -45,6 +45,9 @@ public class NoticeViewHolder extends BaseViewHolder<NoticeViewModel> implements
         tvItemNoteDescription.setText(noticeViewModel.getDescription());
         tvItemNoteDate.setText(noticeViewModel.getDate());
         tvItemNoteDeadline.setText(noticeViewModel.getDateDeadline());
+        if (noticeViewModel.isSolved()) {
+            cbItemNoteStatus.setClickable(false);
+        }
         cbItemNoteStatus.setChecked(noticeViewModel.isSolved());
     }
 

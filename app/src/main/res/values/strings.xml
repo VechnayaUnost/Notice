@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">Notice</string>
-    <string name="current">Current</string>
-    <string name="completed">Completed</string>
     <string name="dialog">Dialog</string>
-    <string name="current_fragment">Current fragment</string>
-    <string name="completed_fragment">Completed fragment</string>
+    <string name="current_fragment">Current</string>
+    <string name="completed_fragment">Completed</string>
     <string name="title">title</string>
     <string name="description">description</string>
     <string name="date">choose date</string>
@@ -12,7 +10,7 @@
     <string name="action_search">search</string>
     <string name="color_pink">pink</string>
     <string name="color_orange">orange</string>
-    <string name="color_blue">blue</string>
+    <string name="color_black">black</string>
     <string name="no_results">No results</string>
 
     <string-array name="items">
@@ -20,6 +18,4 @@
         <item>task</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

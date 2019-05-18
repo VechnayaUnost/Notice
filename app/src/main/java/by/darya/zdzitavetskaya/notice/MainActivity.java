@@ -2,8 +2,6 @@ package by.darya.zdzitavetskaya.notice;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -98,12 +96,13 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         accelerometer = Objects.requireNonNull(sensorManager).getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         Fabric.with(this, new Crashlytics());
+
+        setThemeColor();
         setContentView(R.layout.activity_main);
 
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(bottomAppBar);
-        setFabColor();
         setupViewPager(viewPager);
         initTabBarLayout(viewPager);
         setupSearchViewListener();
@@ -121,6 +120,7 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     onNoticesUpdate();
+                    hideMessage();
                 } else {
                     mainPresenter.searchNotices(newText);
                 }
@@ -163,8 +163,8 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CurrentNoticeFragment(), getString(R.string.current));
-        adapter.addFragment(new CompletedNoticeFragment(), getString(R.string.completed));
+        adapter.addFragment(new CurrentNoticeFragment(), getString(R.string.current_fragment));
+        adapter.addFragment(new CompletedNoticeFragment(), getString(R.string.completed_fragment));
         viewPager.setAdapter(adapter);
     }
 
@@ -225,7 +225,9 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
             setFabIcon(R.drawable.ic_delete_white);
-            itemSearch.setVisible(false);
+            if (itemSearch != null) {
+                itemSearch.setVisible(false);
+            }
             simpleSearchView.closeSearch();
         } else {
             bottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
@@ -238,8 +240,8 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
         fab.setImageDrawable(ContextCompat.getDrawable(this, id));
     }
 
-    private void setFabColor() {
-        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Preference.getColor(this))));
+    private void setThemeColor() {
+        setTheme(getResources().getIdentifier(Preference.getThemeName(this), "style", getPackageName()));
     }
 
     private void onTabChanged(TabLayout.Tab tab, int color, float size) {
@@ -277,18 +279,16 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.color_pink:
-                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                Preference.setColor(this, getResources().getString(R.color.colorAccent));
+                Preference.setThemeName(this, Constants.THEME_NAME);
                 break;
             case R.id.color_orange:
-                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorOrange)));
-                Preference.setColor(this, getResources().getString(R.color.colorOrange));
+                Preference.setThemeName(this, Constants.THEME_ORANGE_NAME);
                 break;
             case R.id.color_blue:
-                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlue)));
-                Preference.setColor(this, getResources().getString(R.color.colorBlue));
+                Preference.setThemeName(this, Constants.THEME_BLACK_NAME);
                 break;
         }
+        recreate();
         return super.onOptionsItemSelected(item);
     }
 

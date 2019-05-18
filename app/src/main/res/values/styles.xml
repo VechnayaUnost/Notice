@@ -6,6 +6,18 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="AppThemeOrange" parent="AppTheme">
+        <item name="colorAccent">@color/colorOrange</item>
+        <item name="colorControlActivated">@color/colorOrange</item>
+    </style>
+
+    <style name="AppThemeBlue" parent="AppTheme">
+        <item name="colorAccent">@color/colorBlack</item>
+        <item name="colorControlActivated">@color/colorBlack</item>
     </style>
 
     <style name="SpinnerWithoutArrow" parent="android:Widget">
@@ -16,10 +28,9 @@
         <item name="cardBackgroundColor">@android:color/white</item>
         <item name="android:foreground">?android:selectableItemBackground</item>
         <item name="cardElevation">2dp</item>
-        <item name="cardCornerRadius">2dp</item>
+        <item name="cardCornerRadius">15dp</item>
         <item name="android:clickable">true</item>
         <item name="android:layout_margin">8dp</item>
     </style>
-
 
 </resources>

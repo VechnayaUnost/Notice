@@ -40,8 +40,8 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
         super.onViewCreated(view, savedInstanceState);
 
         setupRecycler();
-        currentNoticePresenter.getNoticesFromDatabase();
         setupAdapter();
+        currentNoticePresenter.getNoticesFromDatabase();
     }
 
     private void setupAdapter() {
@@ -52,11 +52,6 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     private void setupRecycler() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         getRecycler().setLayoutManager(layoutManager);
-    }
-
-    @Override
-    public int getLayoutFragment() {
-        return R.layout.fragment_current_notice;
     }
 
     @Override
@@ -87,6 +82,6 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     }
 
     public void updateList() {
-        currentNoticePresenter.getNoticesFromDatabase();
+        currentNoticePresenter.getNoticesFromDatabase();        //TODO : "NPE"
     }
 }

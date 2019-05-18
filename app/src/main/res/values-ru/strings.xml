@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Заметки</string>
+    <string name="dialog">Диалог</string>
+    <string name="current_fragment">Текущие</string>
+    <string name="completed_fragment">Завершенные</string>
+    <string name="title">название</string>
+    <string name="description">описание</string>
+    <string name="date">выбрать дату</string>
+    <string name="time">выбрать время</string>
+    <string name="action_search">поиск</string>
+    <string name="color_pink">розовая</string>
+    <string name="color_orange">оранжевая</string>
+    <string name="color_black">черная</string>
+    <string name="no_results">Нет результатов</string>
+
+    <string-array name="items">
+        <item>заметка</item>
+        <item>задание</item>
+    </string-array>
+
+</resources>
