@@ -12,7 +12,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import java.util.List;
 
 import butterknife.BindView;
-import by.darya.zdzitavetskaya.notice.MainActivity;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.common.interfaces.Listener;
 import by.darya.zdzitavetskaya.notice.model.view.BaseViewModel;
@@ -39,8 +38,8 @@ public class CompletedNoticeFragment extends BaseFragment implements CompletedNo
         super.onViewCreated(view, savedInstanceState);
 
         setupRecycler();
-        completedNoticePresenter.getNoticesFromDatabase();
         setupAdapter();
+        completedNoticePresenter.getNoticesFromDatabase();
     }
 
     private void setupAdapter() {
@@ -51,11 +50,6 @@ public class CompletedNoticeFragment extends BaseFragment implements CompletedNo
     private void setupRecycler() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         getRecycler().setLayoutManager(layoutManager);
-    }
-
-    @Override
-    public int getLayoutFragment() {
-        return R.layout.fragment_current_notice;
     }
 
     @Override

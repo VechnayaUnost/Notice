@@ -26,7 +26,7 @@
 
         <item
             android:id="@+id/color_blue"
-            android:title="@string/color_blue"
+            android:title="@string/color_black"
             app:showAsAction="never"
             />
 

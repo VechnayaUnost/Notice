@@ -10,6 +10,6 @@ public final class Utility {
         if (date == null) {
             return "";
         }
-        return DateFormat.format("d MMMM y", date).toString();
+        return DateFormat.format("d MMM yyyy hh:mm", date).toString();
     }
 }
