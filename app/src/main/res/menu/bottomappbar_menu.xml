@@ -8,6 +8,7 @@
         android:icon="@drawable/ic_search_black"
         android:title="@string/action_search"
         app:showAsAction="ifRoom"
+        android:visible="false"
         />
 
     <group>
@@ -25,7 +26,7 @@
             />
 
         <item
-            android:id="@+id/color_blue"
+            android:id="@+id/color_black"
             android:title="@string/color_black"
             app:showAsAction="never"
             />

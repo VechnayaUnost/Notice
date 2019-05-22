@@ -15,7 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import javax.inject.Inject;
 
 import by.darya.zdzitavetskaya.notice.App;
-import by.darya.zdzitavetskaya.notice.MainActivity;
+import by.darya.zdzitavetskaya.notice.ui.activity.MainActivity;
 import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.model.NoteModel;
 import io.realm.Realm;

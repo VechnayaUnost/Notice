@@ -41,7 +41,7 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
 
         setupRecycler();
         setupAdapter();
-        currentNoticePresenter.getNoticesFromDatabase();
+        updateList();
     }
 
     private void setupAdapter() {
@@ -82,6 +82,10 @@ public class CurrentNoticeFragment extends BaseFragment implements CurrentNotice
     }
 
     public void updateList() {
-        currentNoticePresenter.getNoticesFromDatabase();        //TODO : "NPE"
+        currentNoticePresenter.getNoticesFromDatabase();
+    }
+
+    public void deleteList() {
+        adapter.deleteItems();
     }
 }

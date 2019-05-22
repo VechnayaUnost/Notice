@@ -42,7 +42,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
         realmResults.deleteAllFromRealm();
         realm.commitTransaction();
-        realm.close();
     }
 
     public void searchNotices(String search) {

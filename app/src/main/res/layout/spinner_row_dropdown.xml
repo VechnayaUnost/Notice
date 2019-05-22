@@ -4,7 +4,6 @@
     android:id="@+id/rl_spinner_item"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@color/colorPrimary"
     >
 
     <TextView

@@ -1,4 +1,4 @@
-package by.darya.zdzitavetskaya.notice;
+package by.darya.zdzitavetskaya.notice.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -32,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import by.darya.zdzitavetskaya.notice.R;
 import by.darya.zdzitavetskaya.notice.common.constants.Constants;
 import by.darya.zdzitavetskaya.notice.common.interfaces.UpdateListener;
 import by.darya.zdzitavetskaya.notice.common.utility.Preference;
@@ -270,6 +272,9 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
 
         itemSearch = menu.findItem(R.id.app_bar_search);
         simpleSearchView.setMenuItem(itemSearch);
+        if (bottomAppBar.getFabAlignmentMode() == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) {
+            itemSearch.setVisible(true);
+        }
 
         return true;
     }
@@ -284,7 +289,7 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
             case R.id.color_orange:
                 Preference.setThemeName(this, Constants.THEME_ORANGE_NAME);
                 break;
-            case R.id.color_blue:
+            case R.id.color_black:
                 Preference.setThemeName(this, Constants.THEME_BLACK_NAME);
                 break;
         }
@@ -294,8 +299,8 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
 
     @Override
     public void onNoticesUpdate() {
-        CurrentNoticeFragment currentNoticeFragment = (CurrentNoticeFragment) adapter.getItem(0);
-        currentNoticeFragment.updateList();
+        Fragment currentNoticeFragment = getSupportFragmentManager().getFragments().get(0);
+        ((CurrentNoticeFragment) currentNoticeFragment).updateList();
     }
 
     @Override
@@ -338,6 +343,7 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
     protected void onPause() {
         super.onPause();
 
+        simpleSearchView.closeSearch();
         sensorManager.unregisterListener(this);
     }
 
@@ -350,19 +356,20 @@ public class MainActivity extends MvpAppCompatActivity implements UpdateListener
 
     @Override
     public void onDeletedAllSolved() {
-        CompletedNoticeFragment completedNoticeFragment = (CompletedNoticeFragment) adapter.getItem(1);
-        completedNoticeFragment.clearList();
+        Fragment completedNoticeFragment = getSupportFragmentManager().getFragments().get(1);
+        ((CompletedNoticeFragment) completedNoticeFragment).clearList();
     }
 
     @Override
     public void search(final List<BaseViewModel> notices) {
+        Fragment currentNoticeFragment = getSupportFragmentManager().getFragments().get(0);
         if (notices.size() == 0) {
             showMessage();
+            ((CurrentNoticeFragment) currentNoticeFragment).deleteList();
         } else {
             hideMessage();
+            ((CurrentNoticeFragment) currentNoticeFragment).onNoticesSuccess(notices);
         }
-        CurrentNoticeFragment currentNoticeFragment = (CurrentNoticeFragment) adapter.getItem(0);
-        currentNoticeFragment.onNoticesSuccess(notices);
     }
 
     private void showMessage() {

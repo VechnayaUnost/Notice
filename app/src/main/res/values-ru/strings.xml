@@ -11,7 +11,7 @@
     <string name="color_pink">розовая</string>
     <string name="color_orange">оранжевая</string>
     <string name="color_black">черная</string>
-    <string name="no_results">Нет результатов</string>
+    <string name="no_results">Ничего не найдено</string>
 
     <string-array name="items">
         <item>заметка</item>

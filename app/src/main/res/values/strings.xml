@@ -12,6 +12,8 @@
     <string name="color_orange">orange</string>
     <string name="color_black">black</string>
     <string name="no_results">No results</string>
+    <string name="tab_icon" translatable="false">tab icon</string>
+    <string name="spinner" translatable="false">spinner</string>
 
     <string-array name="items">
         <item>note</item>

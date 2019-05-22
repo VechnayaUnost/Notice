@@ -2,7 +2,7 @@ package by.darya.zdzitavetskaya.notice.di.component;
 
 import javax.inject.Singleton;
 
-import by.darya.zdzitavetskaya.notice.MainActivity;
+import by.darya.zdzitavetskaya.notice.ui.activity.MainActivity;
 import by.darya.zdzitavetskaya.notice.di.module.ApplicationModule;
 import by.darya.zdzitavetskaya.notice.di.module.ManagerModule;
 import by.darya.zdzitavetskaya.notice.di.module.RealmModule;
